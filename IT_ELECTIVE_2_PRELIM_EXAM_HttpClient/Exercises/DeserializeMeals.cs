@@ -20,18 +20,35 @@ namespace IT_ELECTIVE_2_PRELIM_EXAM_HttpClient.Exercises;
 //     ...
 //   ]
 // }
-
 public static class DeserializeMeals
 {
     public static async Task Run(System.Net.Http.HttpClient client)
     {
-        // TODO: Send GET request to https://themealdb.com/api/json/v1/1/search.php?f=a
-        // TODO: Assert status code is 200 OK
-        // TODO: Parse the response JSON
-        // TODO: Get the "meals" array
-        // TODO: Assert the array has more than 0 items
-        // TODO: Loop through and print each meal's strMeal
+        string url = "https://themealdb.com/api/json/v1/1/search.php?f=a";
 
-        throw new NotImplementedException();
+        var response = await client.GetAsync(url);
+
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            throw new System.Exception("Status code is not 200 OK");
+        }
+
+        string body = await response.Content.ReadAsStringAsync();
+
+        using (var doc = System.Text.Json.JsonDocument.Parse(body))
+        {
+            var mealsElement = doc.RootElement.GetProperty("meals");
+
+            if (mealsElement.ValueKind == System.Text.Json.JsonValueKind.Null || mealsElement.GetArrayLength() <= 0)
+            {
+                throw new System.Exception("The 'meals' array is empty or null.");
+            }
+
+            foreach (var meal in mealsElement.EnumerateArray())
+            {
+                string mealName = meal.GetProperty("strMeal").GetString();
+                System.Console.WriteLine(mealName);
+            }
+        }
     }
 }

@@ -11,16 +11,29 @@ namespace IT_ELECTIVE_2_PRELIM_EXAM_HttpClient.Exercises;
 //
 // This teaches: APIs can return 200 OK but still indicate "not found"
 // in the response body via null data.
-
 public static class HandleNotFound
 {
     public static async Task Run(System.Net.Http.HttpClient client)
     {
-        // TODO: Send GET request to https://themealdb.com/api/json/v1/1/lookup.php?i=999999
-        // TODO: Assert status code is 200 OK
-        // TODO: Parse the response JSON
-        // TODO: Assert that "meals" field is null (not found)
+        string url = "https://themealdb.com/api/json/v1/1/lookup.php?i=999999";
 
-        throw new NotImplementedException();
+        var response = await client.GetAsync(url);
+
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            throw new System.Exception("Status code is not 200 OK");
+        }
+
+        string body = await response.Content.ReadAsStringAsync();
+
+        using (var doc = System.Text.Json.JsonDocument.Parse(body))
+        {
+            var mealsElement = doc.RootElement.GetProperty("meals");
+
+            if (mealsElement.ValueKind != System.Text.Json.JsonValueKind.Null)
+            {
+                throw new System.Exception("Expected the 'meals' property to be null for a non-existent ID.");
+            }
+        }
     }
 }

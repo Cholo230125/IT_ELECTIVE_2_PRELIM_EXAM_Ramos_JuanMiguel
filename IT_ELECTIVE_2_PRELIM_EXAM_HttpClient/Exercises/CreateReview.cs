@@ -1,7 +1,7 @@
 namespace IT_ELECTIVE_2_PRELIM_EXAM_HttpClient.Exercises;
 
 // EXERCISE 6: POST Create Review
-// JSONPlaceholder API: https://jsonplaceholder.typicode.com/posts
+// JSONPlaceholder API: https://jsonplaceholder.typicode.com/posts/
 //
 // Your task:
 // 1. Create a JSON body string: { "title": "Great Pasta!", "body": "Loved this recipe", "userId": 1 }
@@ -12,18 +12,29 @@ namespace IT_ELECTIVE_2_PRELIM_EXAM_HttpClient.Exercises;
 //
 // Hint: Use await client.PostAsync(url, content)
 // Hint: Use new StringContent(json, Encoding.UTF8, "application/json")
-
 public static class CreateReview
 {
     public static async Task Run(System.Net.Http.HttpClient client)
     {
-        // TODO: Create JSON string with title, body, and userId
-        // TODO: Create StringContent with the JSON and Content-Type "application/json"
-        // TODO: Send POST request to https://jsonplaceholder.typicode.com/posts
-        // TODO: Assert status code is 201 Created
-        // TODO: Parse the response JSON
-        // TODO: Assert the response has an "id" field with a value
+        string url = "https://jsonplaceholder.typicode.com/posts";
+        string json = "{\"title\": \"Great Pasta!\", \"body\": \"Loved this recipe\", \"userId\": 1}";
 
-        throw new NotImplementedException();
+        var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var response = await client.PostAsync(url, content);
+
+        if (response.StatusCode != System.Net.HttpStatusCode.Created)
+        {
+            throw new System.Exception("Status code is not 201 Created");
+        }
+
+        string body = await response.Content.ReadAsStringAsync();
+
+        using (var doc = System.Text.Json.JsonDocument.Parse(body))
+        {
+            if (!doc.RootElement.TryGetProperty("id", out _))
+            {
+                throw new System.Exception("The response does not contain an 'id' field.");
+            }
+        }
     }
 }
