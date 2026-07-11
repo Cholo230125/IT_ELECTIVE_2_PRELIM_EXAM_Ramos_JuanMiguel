@@ -15,13 +15,12 @@ namespace IT_ELECTIVE_2_PRELIM_EXAM.Services;
 // - 'RemoveMeal()' should be public (external API)
 // - 'GetKitchenInfo()' should be public (external API)
 // - 'PrepareMeal()' should be protected (only for derived classes)
-
 public class Kitchen
 {
-    public string kitchenName;
-    public string headChef;
-    public int mealCount;
-    public List<Meal> meals;
+    private string kitchenName;
+    private string headChef;
+    public int mealCount { get; private set; }
+    private List<Meal> meals;
 
     public Kitchen(string name, string chef)
     {
@@ -61,7 +60,7 @@ public class Kitchen
         return $"Kitchen: {kitchenName} | Chef: {headChef} | Meals: {mealCount}";
     }
 
-    public string PrepareMeal(string mealName)
+    protected string PrepareMeal(string mealName)
     {
         return $"Preparing {mealName} in {kitchenName}...";
     }
