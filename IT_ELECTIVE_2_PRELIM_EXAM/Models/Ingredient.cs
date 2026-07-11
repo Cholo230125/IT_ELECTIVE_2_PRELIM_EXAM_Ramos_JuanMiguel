@@ -5,12 +5,36 @@ namespace IT_ELECTIVE_2_PRELIM_EXAM.Models;
 // has no validation. Your task:
 // - Ensure 'Quantity' cannot be set to a negative number (throw ArgumentOutOfRangeException)
 // - Ensure 'Name' cannot be set to null or empty (throw ArgumentException)
-
 public class Ingredient
 {
-    public string Name { get; set; }
+    private string _name;
+    private double _quantity;
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new System.ArgumentException();
+            }
+            _name = value;
+        }
+    }
     public string Measure { get; set; }
-    public double Quantity { get; set; }
+    public double Quantity
+    {
+        get => _quantity;
+        set
+        {
+            if (value < 0)
+            {
+                throw new System.ArgumentOutOfRangeException();
+            }
+            _quantity = value;
+        }
+    }
 
     public Ingredient()
     {

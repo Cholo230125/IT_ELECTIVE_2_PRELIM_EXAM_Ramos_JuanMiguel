@@ -8,7 +8,6 @@ namespace IT_ELECTIVE_2_PRELIM_EXAM.Models;
 //
 // Test: When calling GetRecipeInfo() on a RecipeBase reference
 // pointing to a QuickRecipe object, it should call QuickRecipe's version (polymorphism)
-
 public class QuickRecipe : RecipeBase
 {
     public int MaxMinutes { get; set; }
@@ -25,7 +24,7 @@ public class QuickRecipe : RecipeBase
     }
 
     // BUG: This uses 'new' instead of 'override' - fix this!
-    public new string GetRecipeInfo()
+    public override string GetRecipeInfo()
     {
         return $"{base.GetRecipeInfo()} | Quick: Under {MaxMinutes} min";
     }
